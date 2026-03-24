@@ -435,8 +435,8 @@ body{font-family:"Padauk","Noto Sans Myanmar",sans-serif;background:#dde2ea;disp
       </div>
       <div class="kpay-box" style="margin-top:6px">
         <div class="kpay-box-title">📲 ပိုက်ဆံပြန်လွှဲပေးရမည့် ဖုန်းနံပါတ်နဲ့ နာမည်</div>
-        <input class="kpay-inp" id="p2KpayPhone" type="tel" placeholder="KPay ဖုန်းနံပါတ် (09xxxxxxxxx)" maxlength="11" oninput="p2CheckEnable()"/>
-        <input class="kpay-inp" id="p2KpayName" type="text" placeholder="KPay အကောင့်နာမည်" maxlength="50" oninput="p2CheckEnable()"/>
+        <input class="kpay-inp" id="p2KpayPhone" type="tel" placeholder="Wavemoney ဖုန်းနံပါတ် (09xxxxxxxxx)" maxlength="11" oninput="p2CheckEnable()"/>
+        <input class="kpay-inp" id="p2KpayName" type="text" placeholder="Wave အကောင့်နာမည်" maxlength="50" oninput="p2CheckEnable()"/>
       </div>
       <button class="btnp mm" id="p2BuyBtn" onclick="p2Next()" disabled style="background:linear-gradient(135deg,#e53935,#b71c1c);box-shadow:0 5px 16px rgba(229,57,53,.35)">ဝယ်မည် →</button>
       <button class="bghst mm" onclick="closeP2P()">မလုပ်တော့ပါ</button>
@@ -449,7 +449,7 @@ body{font-family:"Padauk","Noto Sans Myanmar",sans-serif;background:#dde2ea;disp
         <div class="timerval" id="p2Tmr">15:00</div>
       </div>
       <div class="paybox">
-        <div class="paylbl">📲 အောက်ပါ KPay/Wave နံပါတ်သို့ ငွေလွှဲပါ</div>
+        <div class="paylbl">📲 အောက်ပါ Wave/Wavemoney နံပါတ်သို့ ငွေလွှဲပါ</div>
         <div class="payphone" id="p2TPhone">Loading...</div>
         <div class="payname" id="p2TName"></div>
         <div class="payamt mm">လွှဲရမည့်ငွေ: <strong id="p2TrAmt">0 Ks</strong></div>
@@ -508,14 +508,14 @@ body{font-family:"Padauk","Noto Sans Myanmar",sans-serif;background:#dde2ea;disp
       </div>
       <button class="bghst mm" onclick="closeWd()">မလုပ်တော့ပါ</button>
     </div>
-    <!-- Step 2: KPay info -->
+    <!-- Step 2: Wave info -->
     <div id="ww2" style="display:none">
       <div class="mtit">💳 ငွေလွှဲပေးရမည့် နံပါတ်</div>
-      <div class="mtit-sub">Admin မှ ပြန်ငွေလွှဲနိုင်ရန် KPay အချက်အလက် ထည့်ပါ</div>
+      <div class="mtit-sub">Admin မှ ပြန်ငွေလွှဲနိုင်ရန် Wave အကောင့် ထည့်ပါ</div>
       <div class="kpay-box">
         <div class="kpay-box-title">📲 ပိုက်ဆံလွှဲပေးရမည့် ဖုန်းနံပါတ်နဲ့ နာမည်</div>
-        <input class="kpay-inp" id="uKpayPhone" type="tel" placeholder="KPay ဖုန်းနံပါတ် (09xxxxxxxxx)" maxlength="11"/>
-        <input class="kpay-inp" id="uKpayName" type="text" placeholder="KPay အကောင့်နာမည်" maxlength="50"/>
+        <input class="kpay-inp" id="uKpayPhone" type="tel" placeholder="Wavemoney ဖုန်းနံပါတ် (09xxxxxxxxx)" maxlength="11"/>
+        <input class="kpay-inp" id="uKpayName" type="text" placeholder="Wave အကောင့်နာမည်" maxlength="50"/>
       </div>
       <div class="banner blue" style="margin-bottom:14px"><span class="bi">ℹ️</span><div class="bb mm"><p>Admin မှ အတည်ပြုပြီးသည်နှင့် ဤနံပါတ်သို့ <strong id="wRetShow"></strong> ပြန်လွှဲပေးမည်</p></div></div>
       <button class="btnp mm" id="wKpayNextBtn" onclick="wStep(3)" disabled>ရှေ့ဆက်မည် →</button>
@@ -526,7 +526,7 @@ body{font-family:"Padauk","Noto Sans Myanmar",sans-serif;background:#dde2ea;disp
       <div class="mtit">📸 Screenshot တင်ပါ</div>
       <div class="wdwarn">
         <p>Referral အတု မဟုတ်ကြောင်း အတည်ပြုနိုင်ရန်<br/>
-        KPay — <span class="ph" id="payPhone">Loading...</span> (<span id="payName">...</span>) သို့<br/>
+        Wave — <span class="ph" id="payPhone">Loading...</span> (<span id="payName">...</span>) သို့<br/>
         <strong>Verification Fee ၅,၀၀၀ ကျပ်</strong> အရင်လွှဲပေးရပါမည်။ 💸<br/><br/>
         ငွေလွှဲပြီးပါက Screenshot တင်ပါ။ Admin မှ (<span id="wTRet"></span>) ပြန်လွှဲပေးမည်။</p>
       </div>
