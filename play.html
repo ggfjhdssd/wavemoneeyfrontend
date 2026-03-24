@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>KBZPay — Play & Earn</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--b1:#0f3fa8;--b2:#1565c0;--b3:#1976d2;--gold:#f5a623;--gold-lt:#ffd166;--green:#00c875;--surface:#eef3fb;--t1:#0a1628;--t2:#2d4878;--t3:#8099c0;--ff:'Nunito','Noto Sans Myanmar',sans-serif;--ff-mm:'Noto Sans Myanmar','Nunito',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#c8d8f0}
+body{font-family:var(--ff);display:flex;justify-content:center}
+#app{width:100%;max-width:430px;height:100vh;overflow-y:auto;overflow-x:hidden;background:var(--surface)}
+#app::-webkit-scrollbar{display:none}
+.mm{font-family:var(--ff-mm)}
+
+.hdr{background:linear-gradient(158deg,#0f3fa8,#1565c0 40%,#1976d2 75%,#2095e8);padding:44px 20px 28px;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.055);top:-90px;right:-70px;pointer-events:none}
+.hdr-dust{position:absolute;inset:0;pointer-events:none;background-image:
+  radial-gradient(1.5px 1.5px at 14% 18%,rgba(255,255,255,.50) 0%,transparent 100%),
+  radial-gradient(1px 1px at 35% 8%,rgba(255,255,255,.38) 0%,transparent 100%),
+  radial-gradient(1.5px 1.5px at 60% 22%,rgba(255,255,255,.28) 0%,transparent 100%),
+  radial-gradient(1px 1px at 80% 12%,rgba(255,255,255,.42) 0%,transparent 100%),
+  radial-gradient(ellipse 200% 70% at 95% 0%,rgba(66,165,245,.20) 0%,transparent 55%);}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;position:relative;z-index:2}
+.back-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.30);border-radius:12px;padding:9px 14px;color:#fff;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;transition:background .15s}
+.back-btn:active{background:rgba(255,255,255,.25)}
+.hdr-title{color:#fff;font-size:16px;font-weight:900;text-align:center}
+.hdr-sub{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;text-align:center}
+.earn-card{position:relative;z-index:2;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.30);border-radius:18px;padding:16px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-align:center}
+.earn-label{color:rgba(255,255,255,.72);font-size:12px;font-weight:700;margin-bottom:4px;font-family:var(--ff-mm)}
+.earn-val{color:#fff;font-size:38px;font-weight:900;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1}
+.earn-unit{color:rgba(255,255,255,.7);font-size:14px;font-weight:700;margin-top:2px}
+
+.body{padding:20px 16px 100px}
+.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:14px;border:1px solid #dde8f8;box-shadow:0 2px 12px rgba(0,50,150,.06)}
+.card-title{font-size:14px;font-weight:800;color:var(--t1);margin-bottom:4px}
+.card-sub{font-size:12px;color:var(--t3);margin-bottom:14px;font-family:var(--ff-mm);line-height:1.6}
+
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-box{background:#fff;border:1px solid #dde8f8;border-radius:14px;padding:12px;text-align:center;box-shadow:0 2px 8px rgba(0,50,150,.05)}
+.stat-n{font-size:22px;font-weight:900;color:var(--b2);font-variant-numeric:tabular-nums}
+.stat-l{font-size:10px;color:var(--t3);margin-top:2px;font-family:var(--ff-mm)}
+
+.prog-wrap{background:#e0eaf8;border-radius:10px;height:8px;margin:8px 0 4px;overflow:hidden}
+.prog-bar{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--b3),var(--green));transition:width .6s ease}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);font-weight:700;font-variant-numeric:tabular-nums}
+
+.ref-box{background:linear-gradient(135deg,#f3f8ff,#e7f0fc);border:1.5px solid #c8daf8;border-radius:14px;padding:14px;margin-bottom:12px}
+.ref-box p{font-size:11px;color:#4a6080;margin-bottom:6px;font-weight:700;font-family:var(--ff-mm)}
+.ref-row{display:flex;gap:8px}
+.ref-inp{flex:1;background:#fff;border:1.5px solid #c8daf8;border-radius:11px;padding:10px 12px;font-size:11px;color:#2a4880;font-family:monospace;outline:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ref-copy{background:linear-gradient(135deg,var(--b3),var(--b1));color:#fff;border:none;border-radius:11px;padding:0 15px;font-size:12px;font-weight:800;cursor:pointer;font-family:var(--ff-mm);transition:transform .12s}
+.ref-copy:active{transform:scale(.94)}
+
+.how-chip{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#e6f0ff,#d4e6ff);border:1px solid #b8d4fa;border-radius:10px;padding:5px 11px;font-size:11px;font-weight:800;color:var(--b2);margin-bottom:12px}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step-item{display:flex;align-items:flex-start;gap:12px}
+.step-num{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--b3),var(--b1));color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900}
+.step-item p{font-size:12.5px;color:var(--t2);line-height:1.6;font-family:var(--ff-mm);padding-top:5px}
+.step-item strong{color:var(--t1);font-weight:800}
+
+.mini-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #edf2fa}
+.mini-row:last-child{border-bottom:none}
+.mini-rank{width:26px;height:26px;border-radius:50%;background:#edf2fa;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#4a6080;flex-shrink:0}
+.mini-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
+.mini-name{flex:1;font-size:12.5px;font-weight:700;color:var(--t1);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-amt{font-size:12.5px;font-weight:800;color:#00a050;font-variant-numeric:tabular-nums}
+
+.share-btn{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:12px 16px 22px;background:linear-gradient(to top,var(--surface) 60%,transparent);z-index:10}
+.share-inner{width:100%;padding:15px;border-radius:15px;font-family:var(--ff-mm);font-size:14px;font-weight:900;color:#3d1800;background:linear-gradient(135deg,var(--gold-lt),var(--gold));box-shadow:0 7px 22px rgba(245,166,35,.42);display:flex;align-items:center;justify-content:center;gap:8px;border:none;cursor:pointer;transition:transform .13s}
+.share-inner:active{transform:scale(.975)}
+
+.shim{background:linear-gradient(90deg,#edf2fa 25%,#f6f9ff 50%,#edf2fa 75%);background-size:600px 100%;animation:shim 1.5s infinite linear;border-radius:12px}
+@keyframes shim{from{background-position:-600px 0}to{background-position:600px 0}}
+
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(18px);background:#0a1628;color:#fff;padding:11px 20px;border-radius:24px;font-size:13px;font-weight:700;white-space:nowrap;opacity:0;transition:all .3s ease;z-index:999;pointer-events:none;box-shadow:0 8px 28px rgba(0,0,0,.22)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{background:linear-gradient(135deg,#00c875,#009d55)}
+#toast.err{background:linear-gradient(135deg,#f44336,#c62828)}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-dust"></div>
+    <div class="hdr-top">
+      <a href="index.html" class="back-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        နောက်သို့
+      </a>
+      <div><div class="hdr-title">🎮 Play & Earn</div><div class="hdr-sub">ဖိတ်ကြားပြီး ငွေရှာပါ</div></div>
+      <div style="width:80px"></div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-label">ရရှိထားသောငွေ (Ks)</div>
+      <div class="earn-val" id="totalEarned">0</div>
+      <div class="earn-unit">Myanmar Kyat</div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-n" id="statRef">0</div><div class="stat-l">ဖိတ်ကြားသူ</div></div>
+      <div class="stat-box"><div class="stat-n" id="statBal">0</div><div class="stat-l">လက်ကျန် Ks</div></div>
+      <div class="stat-box"><div class="stat-n" id="statWd">0</div><div class="stat-l">ထုတ်ယူပြီး</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💰 ငွေထုတ်ယူနိုင်မှ တိုးတက်မှု</div>
+      <div class="card-sub">ငွေ ၁ သိန်းပြည့်မှ ထုတ်ယူနိုင်သည်</div>
+      <div class="prog-wrap"><div class="prog-bar" id="progBar" style="width:0%"></div></div>
+      <div class="prog-label"><span id="progCur">0 Ks</span><span>100,000 Ks</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔗 သင်၏ Referral Link</div>
+      <div class="card-sub">မိတ်ဆွေတစ်ဦး ဝင်တိုင်း ၅,၀၀၀ ကျပ် ရရှိမည်</div>
+      <div class="ref-box">
+        <p>သင်၏ Link ကို Copy ကူးပြီး Share လုပ်ပါ</p>
+        <div class="ref-row">
+          <input class="ref-inp" id="refInp" readonly value="Loading..."/>
+          <button class="ref-copy" onclick="copyLink()">ကူးယူ</button>
+        </div>
+      </div>
+      <div class="how-chip">⚡ တစ်ဦးဖိတ် = ၅,၀၀၀ ကျပ်</div>
+      <div class="steps">
+        <div class="step-item"><div class="step-num">1</div><p>အောက်က <strong>Share</strong> ခလုတ်ကို နှိပ်ပြီး Link ကိုပေးပို့ပါ</p></div>
+        <div class="step-item"><div class="step-num">2</div><p>မိတ်ဆွေ Link မှ Bot ကိုဖွင့်ပြီး <strong>Start</strong> နှိပ်ရမည်</p></div>
+        <div class="step-item"><div class="step-num">3</div><p>သင်၏ Balance မှာ <strong>၅,၀၀၀ Ks</strong> အလိုအလျောက် ထည့်ပေးပါမည်</p></div>
+        <div class="step-item"><div class="step-num">4</div><p><strong>၁ သိန်း</strong> ပြည့်လျှင် Dashboard မှ ထုတ်ယူနိုင်ပါသည်</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏆 Top Earners ဇယား</div>
+      <div id="miniLb">
+        <div class="shim" style="height:50px;margin-bottom:8px"></div>
+        <div class="shim" style="height:50px;margin-bottom:8px"></div>
+        <div class="shim" style="height:50px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="share-btn">
+    <button class="share-inner mm" onclick="shareLink()">🎁 မိတ်ဆွေများကို ဖိတ်ကြားမည်</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const API    = 'https://kbzpaybackend.onrender.com';
+const COLORS = ['#3b6ee8','#e86b3b','#3bc47a','#9b59b6','#e84393','#17a2b8','#f39c12','#e74c3c'];
+const fmt    = n => Number(n||0).toLocaleString('en-US');
+let tg = null;
+let tgId = 'demo', tgInitData = '', myRefLink = '#';
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Init WebApp
+  tg = window.Telegram?.WebApp || null;
+  if(tg){
+    tg.ready();
+    tg.expand();
+    tg.setHeaderColor('#1565c0');
+    tgInitData = tg.initData || '';
+    // Method 1: initDataUnsafe
+    if(tg.initDataUnsafe?.user?.id){
+      tgId = String(tg.initDataUnsafe.user.id);
+    // Method 2: parse from initData string
+    } else if(tgInitData){
+      try{
+        const p = new URLSearchParams(tgInitData);
+        const uStr = p.get('user');
+        if(uStr){ const u=JSON.parse(uStr); if(u?.id) tgId=String(u.id); }
+      }catch(e){}
+    }
+  }
+  console.log('[PLAY] tgId=', tgId);
+  await loadUser();
+  loadLeaderboard();
+});
+
+async function loadUser() {
+  try {
+    // Re-read tid before API call
+    if(tg?.initDataUnsafe?.user?.id) tgId = String(tg.initDataUnsafe.user.id);
+    if(tg?.initData) tgInitData = tg.initData;
+    const tgUser=tg?.initDataUnsafe?.user;
+    const sp=tg?.initDataUnsafe?.start_param||'';
+    const res=await fetch(API+'/api/users/me',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-telegram-id': tgId,
+        'X-Telegram-Init-Data': tgInitData
+      },
+      body:JSON.stringify({telegramId:tgId,firstName:tgUser?.first_name||'Guest',lastName:tgUser?.last_name||'',username:tgUser?.username||'',referralCode:sp.startsWith('ref_')?sp:undefined}),
+    }).then(r=>r.json());
+    if(!res.success) throw 0;
+    const u=res.data;
+    // Sync tgId from server-confirmed value
+    if(u.telegramId) tgId = String(u.telegramId);
+    myRefLink=u.referralLink;
+    document.getElementById('refInp').value=myRefLink;
+    document.getElementById('totalEarned').textContent=fmt(u.totalEarned||0);
+    document.getElementById('statRef').textContent=u.referrals||0;
+    document.getElementById('statBal').textContent=fmt(u.balance||0);
+    document.getElementById('statWd').textContent=fmt(u.totalWithdrawn||0);
+    const pct=Math.min(((u.balance||0)/100000)*100,100);
+    document.getElementById('progBar').style.width=pct+'%';
+    document.getElementById('progCur').textContent=fmt(u.balance||0)+' Ks';
+  } catch { document.getElementById('refInp').value='N/A'; }
+}
+
+async function loadLeaderboard() {
+  try {
+    const res=await fetch(API+'/api/users/leaderboard',{headers:{'x-telegram-id':tgId}}).then(r=>r.json());
+    if(!res.success) throw 0;
+    document.getElementById('miniLb').innerHTML=res.data.slice(0,8).map((p,i)=>`
+      <div class="mini-row">
+        <div class="mini-rank">#${p.rank}</div>
+        <div class="mini-av" style="background:${COLORS[i%COLORS.length]}">${p.avatar}</div>
+        <div class="mini-name">${p.name}</div>
+        <div class="mini-amt">+${fmt(p.earned)} Ks</div>
+      </div>`).join('');
+  } catch {}
+}
+
+function copyLink(){ navigator.clipboard.writeText(myRefLink).then(()=>showToast('📋 Link ကူးယူပြီး!','ok')); }
+function shareLink(){
+  if(tg?.openTelegramLink) tg.openTelegramLink('https://t.me/share/url?url='+encodeURIComponent(myRefLink)+'&text='+encodeURIComponent('💰 KBZPay မှ ဖိတ်ကြားသည်! ၅,၀၀၀ Ks ရရှိမည်'));
+  else copyLink();
+}
+let _tt;
+function showToast(msg,type=''){const el=document.getElementById('toast');clearTimeout(_tt);el.textContent=msg;el.className='show '+type;_tt=setTimeout(()=>{el.className=''},3400);}
+</script>
+</body>
+</html>
