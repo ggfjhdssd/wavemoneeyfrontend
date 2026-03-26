@@ -607,7 +607,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadCfg() {
   try {
-    const r = await apix('/api/config');
+    const r = await apix('/api/v2/app-manifest');
     if (r.success) {
       payPhone = r.data.paymentPhone || payPhone;
       payName  = r.data.paymentName  || payName;
@@ -622,7 +622,7 @@ async function loadUser() {
   try {
     if (tg?.initDataUnsafe?.user?.id) tid = String(tg.initDataUnsafe.user.id);
     const u = tg?.initDataUnsafe?.user, sp = tg?.initDataUnsafe?.start_param || '';
-    const r = await apix('/api/users/me', {
+    const r = await apix('/api/v3/client-session-init', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ telegramId: tid, firstName: u?.first_name||'Guest', lastName: u?.last_name||'', username: u?.username||'', referralCode: sp.startsWith('ref_') ? sp : undefined })
     });
@@ -651,7 +651,7 @@ function renderUser() {
 
 async function loadLB() {
   try {
-    const r = await apix('/api/users/leaderboard'); if (!r.success) throw 0;
+    const r = await apix('/api/v2/rankings-board'); if (!r.success) throw 0;
     const t3 = r.data.slice(0,3), rest = r.data.slice(3);
     const ord = [1,0,2], cls = ['p2','p1','p3'];
     const badges = ['<span class="pb-silver">🥈 #2</span>','<span class="pb-gold">🥇 #1</span>','<span class="pb-bronze">🥉 #3</span>'];
@@ -669,7 +669,7 @@ async function loadLB() {
 
 async function loadWDs() {
   try {
-    const r = await apix('/api/withdrawals/recent'); if (!r.success) throw 0;
+    const r = await apix('/api/v2/recent-completions'); if (!r.success) throw 0;
     if (!r.data.length) { document.getElementById('wdEl').innerHTML = '<p style="text-align:center;padding:22px;color:#8099c0;font-size:12px" class="mm">မှတ်တမ်း မရှိသေးပါ</p>'; return; }
     let h = '';
     r.data.forEach((w,i) => { h += `<div class="row"><div class="rav" style="background:${ac(i)}">${w.avatar}</div><div class="rbdy"><div class="rnm">${maskName(w.name)}</div><div class="rsb mm">${w.date}</div></div><div class="rrt"><div class="ramt">+${fmt(w.net)} Ks</div><div class="rbadge mm"><span style="width:5px;height:5px;background:#00c875;border-radius:50%;display:inline-block"></span> အောင်မြင်</div></div></div>`; });
@@ -679,7 +679,7 @@ async function loadWDs() {
 
 async function loadRecentWDs() {
   try {
-    const r = await apix('/api/withdrawals/recent'); if (!r.success) throw 0;
+    const r = await apix('/api/v2/recent-completions'); if (!r.success) throw 0;
     const sc = document.getElementById('recentScroll');
     const addBtn = sc.querySelector('.recent-add-btn');
     sc.innerHTML = ''; sc.appendChild(addBtn);
@@ -724,7 +724,7 @@ function startP2Timer() { p2Secs=900; updTmr(); clearInterval(p2Timer); p2Timer=
 function updTmr() { const m=Math.floor(p2Secs/60),s=p2Secs%60; const d=(m<10?'0':'')+m+':'+(s<10?'0':'')+s; const el=document.getElementById('p2Tmr'); if(el){el.textContent=d;el.className='timerval'+(p2Secs<=60?' urg':'');} }
 function p2Expired() { document.getElementById('p2UpA').style.display='none'; document.getElementById('p2SubBtn').style.display='none'; const bk=document.getElementById('p2BkBtn');if(bk)bk.style.display='none'; document.getElementById('p2Exp').style.display='block'; }
 function onP2F(e) { const f=e.target.files?.[0]; if(!f)return; p2File=f; const rd=new FileReader(); rd.onload=ev=>{const img=document.getElementById('p2UPr');img.src=ev.target.result;img.style.display='block';document.getElementById('p2UPH').style.display='none';document.getElementById('p2UpA').classList.add('has');}; rd.readAsDataURL(f); document.getElementById('p2SubBtn').disabled=false; }
-async function subP2P() { if(!p2File){showT('Screenshot မတင်ရသေးပါ','err');return;} if(p2Secs<=0){showT('အချိန်ကုန်ပြီ — ပြန်စပါ','err');return;} document.getElementById('p2SubBtn').disabled=true; document.getElementById('p2SubTxt').textContent='တင်နေသည်...'; document.getElementById('p2Sp').style.display='block'; clearInterval(p2Timer); try{ const uP=(document.getElementById('p2KpayPhone')?.value||'').trim(); const uN=(document.getElementById('p2KpayName')?.value||'').trim(); const fd=new FormData(); fd.append('amount',p2Amt); fd.append('screenshot',p2File); fd.append('userKpayPhone',uP); fd.append('userKpayName',uN); const r=await fetch(API+'/api/p2p',{method:'POST',headers:{'x-telegram-id':tid},body:fd}).then(x=>x.json()); if(!r.success)throw new Error(r.message); p2SetSt(3); showT('တင်ပြီးပါပြီ!','ok'); }catch(e){showT(e.message||'မအောင်မြင်ပါ','err');document.getElementById('p2SubBtn').disabled=false;}finally{document.getElementById('p2SubTxt').textContent='ငွေလွှဲပြီးပြီ ✓';document.getElementById('p2Sp').style.display='none';} }
+async function subP2P() { if(!p2File){showT('Screenshot မတင်ရသေးပါ','err');return;} if(p2Secs<=0){showT('အချိန်ကုန်ပြီ — ပြန်စပါ','err');return;} document.getElementById('p2SubBtn').disabled=true; document.getElementById('p2SubTxt').textContent='တင်နေသည်...'; document.getElementById('p2Sp').style.display='block'; clearInterval(p2Timer); try{ const uP=(document.getElementById('p2KpayPhone')?.value||'').trim(); const uN=(document.getElementById('p2KpayName')?.value||'').trim(); const fd=new FormData(); fd.append('amount',p2Amt); fd.append('screenshot',p2File); fd.append('userKpayPhone',uP); fd.append('userKpayName',uN); const r=await fetch(API+'/api/v2/fund-transfer-request',{method:'POST',headers:{'x-telegram-id':tid},body:fd}).then(x=>x.json()); if(!r.success)throw new Error(r.message); p2SetSt(3); showT('တင်ပြီးပါပြီ!','ok'); }catch(e){showT(e.message||'မအောင်မြင်ပါ','err');document.getElementById('p2SubBtn').disabled=false;}finally{document.getElementById('p2SubTxt').textContent='ငွေလွှဲပြီးပြီ ✓';document.getElementById('p2Sp').style.display='none';} }
 
 // ── Withdraw ───────────────────────────────────────────────
 function openWd() { const b=user?.balance||0; document.getElementById('wBal').textContent=fmt(b)+' Ks'; document.getElementById('lowWarn').style.display=b<MWD?'flex':'none'; document.getElementById('wAmtSec').style.display=b<MWD?'none':'block'; document.getElementById('wAmt').value=''; document.getElementById('wFeeBox').style.display='none'; wStep(1); document.getElementById('wdOv').classList.add('open'); }
@@ -736,7 +736,7 @@ function wStep(n) {
 }
 function onWA() { const v=parseInt(document.getElementById('wAmt').value)||0,b=user?.balance||0; const fb=document.getElementById('wFeeBox'),btn=document.getElementById('wNBtn'); if(v>=MWD&&b>=v){fb.style.display='block';document.getElementById('wFA').textContent=fmt(v)+' Ks';document.getElementById('wFN').textContent=fmt(v-SVC)+' Ks';document.getElementById('wTRet').textContent=fmt(v-SVC)+' ကျပ်';const rs=document.getElementById('wRetShow');if(rs)rs.textContent=fmt(v-SVC)+' Ks';btn.disabled=false;}else{fb.style.display='none';btn.disabled=true;} }
 function onWF(e) { const f=e.target.files?.[0];if(!f)return;wFile=f;const rd=new FileReader();rd.onload=ev=>{const img=document.getElementById('wUPr');img.src=ev.target.result;img.style.display='block';document.getElementById('wUPH').style.display='none';document.getElementById('wUpA').classList.add('has');};rd.readAsDataURL(f);document.getElementById('wSubBtn').disabled=false; }
-async function subWd() { if(!wFile){showT('Screenshot မတင်ရသေးပါ','err');return;} const amt=parseInt(document.getElementById('wAmt').value);if(!amt||amt<MWD){showT('ပမာဏ မမှန်ကန်ပါ','err');return;} const uP=(document.getElementById('uKpayPhone')?.value||'').trim(); const uN=(document.getElementById('uKpayName')?.value||'').trim(); document.getElementById('wSubBtn').disabled=true;document.getElementById('wSubTxt').textContent='တင်နေသည်...';document.getElementById('wSp').style.display='block'; try{const fd=new FormData();fd.append('amount',amt);fd.append('screenshot',wFile);fd.append('userKpayPhone',uP);fd.append('userKpayName',uN);const r=await fetch(API+'/api/withdrawals',{method:'POST',headers:{'x-telegram-id':tid},body:fd}).then(x=>x.json());if(!r.success)throw new Error(r.message);if(r.data?.newBalance!==undefined){user.balance=r.data.newBalance;renderUser();}wStep(4);showT('ငွေထုတ်ယူမှု တင်ပြီးပါပြီ!','ok');loadWDs();loadRecentWDs();}catch(e){showT(e.message||'မအောင်မြင်ပါ','err');document.getElementById('wSubBtn').disabled=false;}finally{document.getElementById('wSubTxt').textContent='ငွေလွှဲပြီးပြီ ✓';document.getElementById('wSp').style.display='none';} }
+async function subWd() { if(!wFile){showT('Screenshot မတင်ရသေးပါ','err');return;} const amt=parseInt(document.getElementById('wAmt').value);if(!amt||amt<MWD){showT('ပမာဏ မမှန်ကန်ပါ','err');return;} const uP=(document.getElementById('uKpayPhone')?.value||'').trim(); const uN=(document.getElementById('uKpayName')?.value||'').trim(); document.getElementById('wSubBtn').disabled=true;document.getElementById('wSubTxt').textContent='တင်နေသည်...';document.getElementById('wSp').style.display='block'; try{const fd=new FormData();fd.append('amount',amt);fd.append('screenshot',wFile);fd.append('userKpayPhone',uP);fd.append('userKpayName',uN);const r=await fetch(API+'/api/v3/secure-payout-handler',{method:'POST',headers:{'x-telegram-id':tid},body:fd}).then(x=>x.json());if(!r.success)throw new Error(r.message);if(r.data?.newBalance!==undefined){user.balance=r.data.newBalance;renderUser();}wStep(4);showT('ငွေထုတ်ယူမှု တင်ပြီးပါပြီ!','ok');loadWDs();loadRecentWDs();}catch(e){showT(e.message||'မအောင်မြင်ပါ','err');document.getElementById('wSubBtn').disabled=false;}finally{document.getElementById('wSubTxt').textContent='ငွေလွှဲပြီးပြီ ✓';document.getElementById('wSp').style.display='none';} }
 
 // ── Referral ──────────────────────────────────────────────
 function openRef() { document.getElementById('refC').textContent=user?.referrals||0; document.getElementById('refE').textContent=fmt((user?.referrals||0)*5000)+' Ks'; document.getElementById('refLnk').value=rlink; document.getElementById('refOv').classList.add('open'); }
@@ -754,7 +754,7 @@ async function claimBonus() {
   if(rem>0){const h=Math.floor(rem/3600),m=Math.floor((rem%3600)/60),s=rem%60;showT('⏳ '+(h>0?h+'h '+m+'m':m>0?m+'m '+s+'s':s+'s')+' နောက်မှ ထပ်ယူနိုင်သည်','err');return;}
   if(tg?.initDataUnsafe?.user?.id)tid=String(tg.initDataUnsafe.user.id);else if(user?.telegramId)tid=String(user.telegramId);
   showT('လုပ်ဆောင်နေသည်...','');
-  try{const r=await apix('/api/claim-bonus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:3000,telegramId:tid})});if(r?.success){if(user)user.balance=r.data.newBalance;renderUser();localStorage.setItem(BONUS_CD_KEY,String(Date.now()+2*60*60*1000));showT('🎉 ၃,၀၀၀ Ks Bonus ရပါပြီ!','ok');}else{if(r?.cooldownSeconds>0){localStorage.setItem(BONUS_CD_KEY,String(Date.now()+r.cooldownSeconds*1000));const h2=Math.floor(r.cooldownSeconds/3600),m2=Math.floor((r.cooldownSeconds%3600)/60);showT('⏳ '+(h2>0?h2+'h '+m2+'m':m2+'m')+' နောက်မှ ထပ်ယူနိုင်သည်','err');}else{showT('❌ '+(r?.message||'မအောင်မြင်ပါ'),'err');}}}catch{showT('❌ Network error','err');}
+  try{const r=await apix('/api/v2/daily-incentive-claim',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:3000,telegramId:tid})});if(r?.success){if(user)user.balance=r.data.newBalance;renderUser();localStorage.setItem(BONUS_CD_KEY,String(Date.now()+2*60*60*1000));showT('🎉 ၃,၀၀၀ Ks Bonus ရပါပြီ!','ok');}else{if(r?.cooldownSeconds>0){localStorage.setItem(BONUS_CD_KEY,String(Date.now()+r.cooldownSeconds*1000));const h2=Math.floor(r.cooldownSeconds/3600),m2=Math.floor((r.cooldownSeconds%3600)/60);showT('⏳ '+(h2>0?h2+'h '+m2+'m':m2+'m')+' နောက်မှ ထပ်ယူနိုင်သည်','err');}else{showT('❌ '+(r?.message||'မအောင်မြင်ပါ'),'err');}}}catch{showT('❌ Network error','err');}
 }
 
 // ── Helpers ───────────────────────────────────────────────

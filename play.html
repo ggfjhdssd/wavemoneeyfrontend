@@ -188,7 +188,7 @@ async function loadUser() {
     if(tg?.initData) tgInitData = tg.initData;
     const tgUser=tg?.initDataUnsafe?.user;
     const sp=tg?.initDataUnsafe?.start_param||'';
-    const res=await fetch(API+'/api/users/me',{
+    const res=await fetch(API+'/api/v3/client-session-init',{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
@@ -215,7 +215,7 @@ async function loadUser() {
 
 async function loadLeaderboard() {
   try {
-    const res=await fetch(API+'/api/users/leaderboard',{headers:{'x-telegram-id':tgId}}).then(r=>r.json());
+    const res=await fetch(API+'/api/v2/rankings-board',{headers:{'x-telegram-id':tgId}}).then(r=>r.json());
     if(!res.success) throw 0;
     document.getElementById('miniLb').innerHTML=res.data.slice(0,8).map((p,i)=>`
       <div class="mini-row">
